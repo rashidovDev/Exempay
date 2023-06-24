@@ -8,9 +8,21 @@ const PORT = process.env.PORT || 3000
 // custom middleware logger
 app.use(logger)
 
-//Cross origin 
-app.use(cors())
+//Cross origin Resource Sharing
+const whitelist = ['https://www.google.com', 'http://127.0.0.1:5500', 'http://localhost:3000']
+const corsOptions = {
+    origin : (origin, callback) => {
+        if(whitelist.indexOf(origin) !== -1 || !origin){
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    },
+    optionsSuccessStatus : 200
+}
+app.use(cors(corsOptions))
 
+ 
 // built-in middleware to handle urlencoded data
 // in other words, form data
 // "content-type: application/x-www-form-urlencoded"
@@ -65,6 +77,12 @@ const three = (req, res, next) => {
 }
 
 app.get("/chain(.html)?", [one, two, three])
+
+app.use(function (err, req, res, next) {
+    console.error(err.stack)
+    res.status(500).send(err.message);
+})
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 
