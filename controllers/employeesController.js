@@ -15,7 +15,6 @@ const createNewEmployee = (req, res) => {
     firstname : req.body.firstname,
     lastname : req.body.lastname
    }
-
    data.setEmployees([...data.employees, newEmployee])
    res.status(201).json(data.employees)
 }
